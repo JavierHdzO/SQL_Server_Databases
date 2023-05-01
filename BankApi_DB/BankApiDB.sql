@@ -22,7 +22,15 @@ GO
 CREATE SCHEMA users;
 GO
 
+CREATE SCHEMA user_client;
+GO
+
 CREATE SEQUENCE client.role_counter
+	AS INT
+	START WITH 0
+	INCREMENT BY 1;
+
+CREATE SEQUENCE users.user_counter
 	AS INT
 	START WITH 0
 	INCREMENT BY 1;
@@ -30,9 +38,11 @@ CREATE SEQUENCE client.role_counter
 DROP TABLE IF EXISTS users.Roles;
 DROP TABLE IF EXISTS client.AccountType;
 DROP TABLE IF EXISTS transactions.TransactionType;
+DROP TABLE IF EXISTS users.Usr;
 DROP SCHEMA client;
 DROP SCHEMA transactions;
 DROP SCHEMA accounts;
+
 
 /*
  *	Independet Tables
@@ -79,7 +89,7 @@ CREATE TABLE transactions.TransactionType(
  */
 
  CREATE TABLE users.Usr(
-	UserId INT PRIMARY KEY IDENTITY,
+	UserId INT PRIMARY KEY DEFAULT(NEXT VALUE FOR users.user_counter),
 	Email VARCHAR(50) NOT NULL CHECK( LEN(Email) > 7 ),
 	Password VARCHAR(50) NOT NULL CHECK( LEN(Password) > 8),
 	Active BIT DEFAULT 1,
@@ -88,6 +98,7 @@ CREATE TABLE transactions.TransactionType(
 	CONSTRAINT fk_role FOREIGN KEY(RoleId)
 	REFERENCES users.Roles(RoleId)
  );
+
 
  CREATE TABLE accounts.Client(
 	ClientId INT PRIMARY KEY IDENTITY,
@@ -103,6 +114,7 @@ CREATE TABLE transactions.TransactionType(
 	ON UPDATE CASCADE
 	ON DELETE CASCADE
  );
+
 
  CREATE TABLE accounts.Account(
 	AccountId INT PRIMARY KEY IDENTITY,
